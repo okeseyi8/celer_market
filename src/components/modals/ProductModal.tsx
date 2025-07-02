@@ -10,10 +10,10 @@ import Image from 'next/image';
 
 import { IoMdClose } from "react-icons/io";
 const ProductModal = () => {
-  const { productModal, showProductModal, product } = useProductStore(
+  const { productModal, showProductModal, product, setProduct } = useProductStore(
     useShallow((s) => ({
       productModal: s.productModal,
-
+      setProduct: s.setProduct,
       showProductModal: s.showProductModal,
       product: s.product,
     }))
@@ -122,7 +122,7 @@ const ProductModal = () => {
                   <Image
                     width={408}
                     height={267}
-                    className="md:w-[48%] rounded-[8px] h-[544px] object-cover "
+                    className="md:w-[48%] rounded-[8px] md:h-[544px] h-[393px] object-cover "
                     src="/assets/images/dummyimg1.svg"
                     alt=""
                   />
@@ -177,17 +177,18 @@ const ProductModal = () => {
                   <h3 className="text-[18px]  font-bold mb-[16px]">
                     You might also like
                   </h3>
-                  <div className="w-full gap-4 flex  flex-wrap p-0">
+                  <div className="w-full gap-4 flex  justify-center flex-wrap p-0">
                     {Products.map((product) => (
                       <div
+                        onClick={() => setProduct(product)}
                         key={product.productName}
-                        className=" w-[196px] p-0 flex flex-col  transition-transform duration-300 ease-in-out transform origin-center hover:scale-110 "
+                        className=" w-[140px] md:w-[196px] p-0 flex flex-col  transition-transform duration-300 ease-in-out transform origin-center hover:scale-110 "
                       >
-                        <div className="w-full h-[392px] ">
+                        <div className=" md:h-[267px] h-[196px] ">
                           <Image
                            width={220}
                            height={392}
-                            className="rounded-md object-cover h-full"
+                            className=" rounded-md object-cover  h-full"
                             src="/assets/images/dummyimg1.svg"
                             alt=""
                           />

@@ -1,20 +1,25 @@
-"use client"
-import {create} from "zustand"
+"use client";
+import { create } from "zustand";
 import { Product } from "@/types";
-interface useProductType{
-    productModal: boolean;
-    productID: string;
-    product: Product;
-    showProductModal: () => void
-    setProductID: (id: string) => void
-    setProduct: (product: Product) => void
 
+interface useProductType {
+  productModal: boolean;
+  productID: string;
+  product: Product;
+  cartModal: boolean;
+  showCartModal: () => void;
+  showProductModal: () => void;
+  setProductID: (id: string) => void;
+  setProduct: (product: Product) => void;
 }
 
 export const useProductStore = create<useProductType>()((set) => ({
-    productModal: false,
-    productID: "heloo",
-    product: {
+  productModal: false,
+  productID: "",
+  cartModal:false,
+
+
+  product: {
     productName: "",
     desc: "",
     price: 0,
@@ -22,23 +27,34 @@ export const useProductStore = create<useProductType>()((set) => ({
     wishListed: false,
     addedToCart: false,
     sizesAvailable: [],
-  }, 
-   setProduct: ({productName,desc, price, originalPrice, wishListed, addedToCart, sizesAvailable} : Product) => set({
-    product: {
+  },
+  setProduct: ({
     productName,
-    desc: desc,
-    price: price,
+    desc,
+    price,
     originalPrice,
     wishListed,
     addedToCart,
     sizesAvailable,
-  }
-   }),
-    setProductID: (id: string) => set({productID: id}),
-    showProductModal: () => set((state) => ({
-        productModal: !state.productModal
+  }: Product) =>
+    set({
+      product: {
+        productName,
+        desc: desc,
+        price: price,
+        originalPrice,
+        wishListed,
+        addedToCart,
+        sizesAvailable,
+      },
+    }),
+  setProductID: (id: string) => set({ productID: id }),
+  showProductModal: () =>
+    set((state) => ({
+      productModal: !state.productModal,
+    })),
+   showCartModal: () => set((state) => ({
+    cartModal: !state.cartModal
+   }))
 
-    }))
-
-})) 
-
+}));
