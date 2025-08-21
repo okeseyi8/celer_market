@@ -7,3 +7,5 @@ export type Product = {
   addedToCart: boolean;
   wishListed: boolean;
 };
+
+

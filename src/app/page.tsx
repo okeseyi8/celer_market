@@ -1,142 +1,269 @@
 "use client";
-import ProductCard from "@/components/productcard/ProductCard";
-import React, { useEffect } from "react";
-import { RiShoppingBag3Line } from "react-icons/ri";
-import { Product } from "@/types";
 
-import { useProductStore } from "@/store/useProductStore";
+import Loader from "@/components/ui/Loader";
+import useInputChangeHandler from "@/hooks/useInputChangeHandler";
+import { useAuthStore } from "@/store/useAuthStore";
+import { useSwitchStore } from "@/store/useSwitchStore";
+import { motion, AnimatePresence } from "framer-motion";
+
+import { useRouter } from "next/navigation";
+
+import { useEffect } from "react";
 import { useShallow } from "zustand/shallow";
-import ProductModal from "@/components/modals/ProductModal";
-import CartModal from "@/components/modals/CartModal";
-const Page = () => {
-  const {
-    productModal,
-    showCartModal,
-    productID,
-    cartModal,
-    setProduct,
-  } = useProductStore(
-    useShallow((s) => ({
-      productModal: s.productModal,
-      showCartModal: s.showCartModal,
-      cartModal: s.cartModal,
-      productID: s.productID,
 
-      setProduct: s.setProduct,
+const Page = () => {
+  const router = useRouter()
+  const [loginDetails, handleChange] = useInputChangeHandler({
+    email: "",
+    password: "",
+  });
+  const [registerDetails, handleRegisterChange] = useInputChangeHandler({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+  useEffect(() => {
+    console.log("Register:", registerDetails);
+    console.log("Login Payload:", loginDetails);
+  }, [registerDetails, loginDetails]);
+  const { loginLoading, registerLoading, loginUser, registerUser, user, userToken } =
+    useAuthStore(
+      useShallow((s: any) => ({
+        loginLoading: s.loginLoading,
+        registerLoading: s.registerLoading,
+        loginUser: s.loginUser,
+        registerUser: s.registerUser,
+        user: s.user,
+        userToken: s.userToken
+      }))
+    );
+  useEffect(() => {
+    console.log("User:", user, "User Token:", userToken)
+    if (userToken && user) {
+      
+      router.push("/home");
+    } else {
+      
+      router.push("/");
+    }
+  }, );
+  
+  const { isLogin, authSwitch } = useSwitchStore(
+    useShallow((s) => ({
+      isLogin: s.isLogin,
+      authSwitch: s.authSwitch,
     }))
   );
 
-  const Products: Product[] = [
-    {
-      productName: '"SCORPION" Jersey RED-VENOM',
-      desc: "Comfortable layered shorts with modern design",
-      price: 40,
-      originalPrice: 50,
-      wishListed: false,
-      addedToCart: false,
-      sizesAvailable: ["XS", "S", "M", "L"],
-    },
-    {
-      productName: '"ENDSARS" BLOOD OF A NATION',
-      desc: "Comfortable layered shorts with modern design",
-      price: 57,
-      originalPrice: 90,
-      wishListed: false,
-      addedToCart: false,
-      sizesAvailable: ["XS", "S", "M", "L"],
-    },
-    {
-      productName: '"CRISIS" CAP',
-      desc: "Bold statement cap in vibrant red",
-      price: 95,
-      originalPrice: 0,
-      wishListed: false,
-      addedToCart: false,
-      sizesAvailable: ["XS", "S", "M", "L"],
-    },
-    {
-      productName: '"TEAM" STINGINC MEMBAH SHIRT',
-      desc: "Oversized layered longsleeve for urban style",
-      price: 260,
-      originalPrice: 0,
-      wishListed: false,
-      addedToCart: false,
-      sizesAvailable: ["XS", "S", "M", "L"],
-    },
-    {
-      productName: '"URBAN" CIVILIAN": A WAY TO LIVE',
-      desc: "Functional cargo pants with multiple pockets",
-      price: 260,
-      originalPrice: 0,
-      wishListed: false,
-      addedToCart: false,
-      sizesAvailable: ["XS", "S", "M", "L"],
-    },
-    {
-      productName: '"MANNIMAL" HOODIE NOCTURNAL ANIM.',
-      desc: "Clean minimal hoodie in premium fabric",
-      price: 145,
-      originalPrice: 0,
-      wishListed: false,
-      addedToCart: false,
-      sizesAvailable: ["XS", "S", "M", "L"],
-    },
-    {
-      productName: '"STREET" SNEAKERS',
-      desc: "High-end street sneakers with unique design",
-      price: 320,
-      originalPrice: 400,
-      wishListed: false,
-      addedToCart: false,
-      sizesAvailable: ["XS", "S", "M", "L"],
-    },
-    {
-      productName: '"CLASSIC" DENIM JACKET',
-      desc: "Timeless denim jacket with modern fit",
-      price: 195,
-      originalPrice: 0,
-      wishListed: false,
-      addedToCart: false,
-      sizesAvailable: ["XS", "S", "M", "L"],
-    },
-  ];
-  useEffect(() => {
-    console.log("Clicked:", cartModal);
-  }, [cartModal]);
-
   return (
-    <div className="w-full  flex flex-col font-geist justify-center items-center py-[32px] lg:px-[200px]">
-      {productModal && <ProductModal />}
-      {cartModal && <CartModal />}
+    <div className="w-full flex justify-center items-center  bg-[#eee] h-screen ">
+      <div className="w-full flex justify-center ">
+        <div className="form flex justify-center lg:w-9/12 w-11/12 h-[700px] bg-white  rounded-2xl shadow-xl overflow-hidden">
+          <div className="relative w-full h-full overflow-hidden">
+            <AnimatePresence>
+              {isLogin ? (
+                <motion.div
+                  key="login-view"
+                  className="absolute inset-0 flex w-full h-full"
+                  initial={{ opacity: 0.3 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  {/* LEFT PANEL */}
+                  <motion.div
+                    initial={{ opacity: 0.3, x: 100 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 100 }}
+                    transition={{ type: "spring", stiffness: 120, damping: 20 }}
+                    className="hidden w-1/2 lg:flex justify-center items-center bg-black h-full text-white"
+                  >
+                    <div className="flex flex-col justify-center items-center gap-5">
+                      <h1 className="text-[45px] font-bold">Welcome Back</h1>
+                      <p className="font-semibold text-center">
+                        Enter your details and start your journey with <br />{" "}
+                        products that suit you.
+                      </p>
+                      <button
+                        type="button"
+                        onClick={authSwitch}
+                        className="cursor-pointer flex justify-center items-center h-[40px] text-xl font-semibold border rounded-3xl w-[150px] py-1"
+                      >
+                       {loginLoading ? (<Loader />) : "Log In"}
+                      </button>
+                    </div>
+                  </motion.div>
 
-      <div className="w-full flex items-center justify-between text-center mb-[32px] px-4 lg:px-0">
-        <div></div>
-        <div>
-          <h1 className="text-2xl  font-bold text-[30px] ">
-            STING STORE COLLECTION
-          </h1>
+                  {/* RIGHT PANEL */}
+                  <motion.div
+                    initial={{ opacity: 0.3, x: -100 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -100 }}
+                    transition={{ type: "spring", stiffness: 120, damping: 20 }}
+                    className="w-full lg:w-1/2 flex justify-center items-center h-full text-black"
+                  >
+                    <div className="w-full flex flex-col justify-center items-center gap-5">
+                      <h1 className="text-[45px] font-bold">Sign Up</h1>
+                      <form className="w-full" action="">
+                        <div className="w-full flex flex-col gap-3 justify-center text-[#111] text-xl font-medium items-center">
+                          <input
+                            placeholder="Name"
+                            name="name"
+                            onChange={handleRegisterChange}
+                            className="bg-[#dee] w-8/10 h-12 p-4"
+                            type="text"
+                          />
+                          <input
+                            placeholder="Email"
+                            name="email"
+                            onChange={handleRegisterChange}
+                            className="bg-[#dee] w-8/10 h-12 p-4"
+                            type="text"
+                          />
+                          <input
+                            placeholder="Password"
+                            name="password"
+                            onChange={handleRegisterChange}
+                            className="bg-[#dee] w-8/10 h-12 p-4"
+                            type="text"
+                          />
+                          <input
+                            placeholder="Confirm Password"
+                            name="confirmPassword"
+                            onChange={handleRegisterChange}
+                            className="bg-[#dee] w-8/10 h-12 p-4"
+                            type="password"
+                          />
+                        </div>
+                      </form>
+                      <div className="w-[80%]">
+                        <button
+                          onClick={() => authSwitch()}
+                          className="cursor-pointer w-full flex justify-end text-right"
+                        >
+                          Already Have An Account?
+                        </button>
+                      </div>
+                      {/* <Link
+                        href="/home"
+                        className="cursor-pointer text-center bg-black text-white text-xl font-semibold border rounded-3xl w-[150px] py-1"
+                      >
+                        Sign Up
+                      </Link> */}
+                      <button
+                        onClick={() => {
+                          registerUser(registerDetails);
+                        }}
+                        className="cursor-pointer flex justify-center items-center h-[40px] text-center bg-black text-white text-xl font-semibold border rounded-3xl w-[150px] py-1"
+                      >
+                        {registerLoading ? <Loader /> : "Sign Up"}
+                      </button>
+                    </div>
+                  </motion.div>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="signup-view"
+                  className="absolute inset-0 flex w-full h-full"
+                  initial={{ opacity: 0.3 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  {/* LEFT PANEL */}
+                  <motion.div
+                    initial={{ opacity: 0.3, x: -50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 50 }}
+                    transition={{ type: "spring", stiffness: 120, damping: 20 }}
+                    className="w-full lg:w-1/2 flex justify-center items-center h-full text-black"
+                  >
+                    <div className="w-full flex flex-col justify-center items-center gap-5">
+                      <h1 className="text-[45px] font-bold">Log In</h1>
+                      <form className="w-full" action="">
+                        <div className="w-full flex flex-col gap-3 justify-center text-[#111] text-xl font-medium items-center">
+                          <input
+                            placeholder="Name"
+                            name="email"
+                            onChange={handleChange}
+                            className="bg-[#dee] w-8/10 h-12 p-4"
+                            type="text"
+                          />
+                          <input
+                            placeholder="Password"
+                            name="password"
+                            onChange={handleChange}
+                            className="bg-[#dee] w-8/10 h-12 p-4"
+                            type="password"
+                          />
+                        </div>
+                      </form>
+                      <div className="w-[80%]">
+                        <button
+                          onClick={() => authSwitch()}
+                          className="cursor-pointer w-full flex justify-end text-right"
+                        >
+                          Don&apos;t have an Account?
+                        </button>
+                      </div>
+                      {/* <Link
+                        href="/home"
+                        className="cursor-pointer text-center bg-black text-white text-xl font-semibold border rounded-3xl w-[150px] py-1"
+                      >
+                        Log In
+                      </Link> */}
+                      <button
+                        onClick={() => {
+                          loginUser(loginDetails);
+                        }}
+                        className="cursor-pointer text-center flex justify-center items-center h-[40px] bg-black text-white text-xl font-semibold border rounded-3xl w-[150px] py-1"
+                      >
+                      {loginLoading ? (<Loader />) : "Log In"}
+                      </button>
+                    </div>
+                  </motion.div>
 
-          <p className="text-[16px] text-[#4b5563]">
-            Discover our latest products
-          </p>
-        </div>
+                  {/* RIGHT PANEL */}
+                  <motion.div
+                    initial={{ opacity: 0.3, x: 50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -50 }}
+                    transition={{ type: "spring", stiffness: 120, damping: 20 }}
+                    className="hidden lg:w-1/2 w-full lg:flex justify-center items-center bg-black h-full text-white"
+                  >
+                    <div className="flex flex-col justify-center items-center gap-5">
+                      <h1 className="text-[45px] font-bold">Welcome Back</h1>
+                      <p className="font-semibold text-center">
+                        Enter your details and start your journey with <br />{" "}
+                        products that suit you.
+                      </p>
+                      <button
+                        type="button"
+                        onClick={authSwitch}
+                        className="cursor-pointer text-xl font-semibold border rounded-3xl w-[150px] py-1"
+                      >
+                        Sign Up
+                      </button>
+                    </div>
+                  </motion.div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
 
-        <div>
-          <button onClick={() => showCartModal()} className="flex  text-[14px] font-semibold items-center  border-[1px] border-[#e1e1e4] px-[13px] py-[8px] rounded-md gap-3">
-            <RiShoppingBag3Line className="font-bold text-[17px]" />
-           <span className="hidden lg:flex"> Cart</span>
-          </button>
-        </div>
-      </div>
-      <div className="w-fit flex justify-center mx-2 lg:m-0 ">
-        <div className="flex flex-wrap justify-center md:gap-6 gap-3 bg-white p-0 w-fit">
-          {Products.map((product) => (
-            <ProductCard
-              onClick={() => setProduct(product)}
-              key={product.productName}
-              product={product}
-            />
-          ))}
+          {/* <div className="w-1/2 flex justify-center items-center bg-black h-full text-white">
+            <div className="flex flex-col justify-center items-center gap-5">
+              <h1 className="text-[45px] font-bold">Hello Friend</h1>
+              <p className="font-semibold text-center">
+                Enter your details and start your journey with <br /> products
+                that suit you.{" "}
+              </p>
+              <button className=" text-xl font-semibold border rounded-3xl w-[150px] py-1">
+                SIGN UP
+              </button>
+            </div>
+          </div> */}
         </div>
       </div>
     </div>

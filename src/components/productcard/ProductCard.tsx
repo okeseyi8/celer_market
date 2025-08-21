@@ -4,48 +4,50 @@ import { Product } from "@/types";
 import { useProductStore } from "@/store/useProductStore";
 import { useShallow } from "zustand/react/shallow";
 import Image from "next/image";
+import { motion } from "framer-motion";
 type ProductCardProps = {
   product: Product;
   onClick?: () => void;
 };
 const ProductCard = ({ product, onClick }: ProductCardProps) => {
-  const { productModal, showProductModal } = useProductStore(
-    useShallow((s) => ({
-      productModal: s.productModal,
-      showProductModal: s.showProductModal,
-    }))
-  );
-  useEffect(() => console.log(productModal), [productModal]);
+  // const { productModal, showProductModal } = useProductStore(
+  //   useShallow((s) => ({
+  //     productModal: s.productModal,
+  //     showProductModal: s.showProductModal,
+  //   }))
+  // );
+  // useEffect(() => console.log(productModal), [productModal]);
 
   return (
-    <div
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
       onClick={() => {
-        showProductModal();
+        // showProductModal();
         onClick?.();
       }}
-      className=" md:w-[301px] w-[47%]    flex flex-col transition-transform duration-300 ease-in-out transform origin-center hover:scale-110 "
+      className="w-full flex flex-col transition-transform duration-300 ease-in-out transform origin-center hover:scale-105"
     >
-      <div className="relative  md:h-[392px] h-[229px]">
+      <div className="relative w-full h-[229px] md:h-[392px]">
         <Image
-          //   width={301}
-          //   height={392}
           fill
-          className=" object-cover h-full"
+          className="object-cover rounded-md"
           src="/assets/images/dummyimg1.svg"
           alt=""
         />
       </div>
 
-      <h3 className=" mt-[12px] text-[14px] font-semibold">
+      <h3 className="mt-3 text-sm md:text-base font-semibold">
         {product.productName}
       </h3>
-      <p className="w-full flex gap-2 text-[14px]  mt-[4px] font-semibold">
-        <span className="text-[#ef4444] font-normal line-through">
+      <p className="w-full flex gap-2 text-sm mt-1 font-semibold">
+        <span className="text-red-500 font-normal line-through">
           €{product.originalPrice}
         </span>
         €{product.price}
       </p>
-    </div>
+    </motion.div>
   );
 };
 

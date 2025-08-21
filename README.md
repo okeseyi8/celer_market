@@ -13,6 +13,45 @@ pnpm dev
 # or
 bun dev
 ```
+File Structure:
+├── README.md
+├── eslint.config.mjs
+├── next-env.d.ts
+├── next.config.ts
+├── package-lock.json
+├── package.json
+├── postcss.config.mjs
+├── public
+│   └── assets
+│       └── images
+│           └── dummyimg1.svg
+├── src
+│   ├── app
+│   │   ├── favicon.ico
+│   │   ├── globals.css
+│   │   ├── home
+│   │   │   └── page.tsx
+│   │   ├── layout.tsx
+│   │   └── page.tsx
+│   ├── components
+│   │   ├── modals
+│   │   │   ├── CartModal.tsx
+│   │   │   └── ProductModal.tsx
+│   │   └── productcard
+│   │       └── ProductCard.tsx
+│   ├── icons
+│   │   └── dummyimg1.svg
+│   ├── store
+│   │   ├── useProductStore.tsx
+│   │   └── useSwitchStore.tsx
+│   └── types
+│       ├── index.ts
+│       └── product.ts
+├── structure.txt
+├── tailwind.config.js
+├── tsconfig.json
+└── types.d.ts
+
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
